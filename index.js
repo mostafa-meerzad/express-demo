@@ -20,23 +20,9 @@ app.get("/api/courses", (req, res) => {
 });
 
 app.post("/api/courses", (req, res) => {
-  // As a security concern you should always validate what the client sends to the backend
-  // basic validation
-  // if(!req.body.name || req.body.name.length < 3){
-  // res.status(400).send("name is required and should be at least 3 characters")
-  // return;
-  // }
-  // Advanced validation
-
-  const schema = {
-    name: Joi.string().min(3).required(),
-  };
-  const result = Joi.validate(req.body, schema);
-  // this is where the error message is stored in joi
-  // console.log(result.error.details[0].message)
-  // console.log(result.error)
-  if (result.error) {
-    res.status(400).send(result.error.details[0].message);
+  const { error } = validateCourse(req.body);
+  if (error) {
+    res.status(400).send(error.details[0].message);
     return;
   }
 
@@ -45,6 +31,23 @@ app.post("/api/courses", (req, res) => {
     name: req.body.name,
   };
   courses.push(course);
+  res.send(course);
+});
+
+app.put("/api/courses/:id", (req, res) => {
+  const course = courses.find((c) => c.id === parseInt(req.params.id));
+
+  if (!course) {
+    res.status(404).send("course not found");
+    return;
+  }
+
+  const { error } = validateCourse(req.body);
+  if (error) {
+    res.status(400).send(error.details[0].message);
+    return;
+  }
+  course.name = req.body.name;
   res.send(course);
 });
 
@@ -58,3 +61,13 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log("server is listening on port: ", port);
 });
+
+// put all course validation in a function to avoid repetition
+
+function validateCourse(course) {
+  const schema = {
+    name: Joi.string().min(3).required(),
+  };
+
+  return Joi.validate(course, schema);
+}
