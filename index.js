@@ -1,6 +1,8 @@
 const express = require("express");
 const Joi = require("joi");
 const log = require("./logger");
+const morgan = require("morgan");
+const helmet = require("helmet");
 const app = express();
 app.use(express.json());
 
@@ -26,6 +28,12 @@ const courses = [
   { id: 2, name: "course2" },
   { id: 3, name: "course3" },
 ];
+
+
+app.use(helmet())
+app.use(morgan("tiny"))
+
+
 
 app.get("/", (req, res) => {
   res.send("Hello World");
