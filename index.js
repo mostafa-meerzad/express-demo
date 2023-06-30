@@ -4,36 +4,38 @@ const log = require("./logger");
 const morgan = require("morgan");
 const helmet = require("helmet");
 const app = express();
+
+// detect the environment in which our app is running
+// there is two ways
+// - process.env.NODE_ENV --> undefined  by default
+// - app.get("env") --> development  by default
+
+// you can use this to set some additional functionalities based on the environment
+
+if(app.get("env")==="development"){
+  app.use(morgan("tiny"))
+  console.log("morgan enabled...");
+}
+
 app.use(express.json());
 
-// make a custom middleware
-// app.use((req, res, next) => {
-//   console.log("logging...")
-// })
-// add a middleware that is in a separate file
-app.use(log)
-// for best practice we should separate our custom middleware functions in their own files
+app.use(log);
+
 app.use((req, res, next) => {
-  console.log("authenticating...")
-  next()
-})
+  console.log("authenticating...");
+  next();
+});
 
-// add middleware to get html-form data 
-app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true }));
 
-// add middleware to host static files 
-app.use(express.static("./public"))
+app.use(express.static("./public"));
 const courses = [
   { id: 1, name: "course1" },
   { id: 2, name: "course2" },
   { id: 3, name: "course3" },
 ];
 
-
-app.use(helmet())
-app.use(morgan("tiny"))
-
-
+app.use(helmet());
 
 app.get("/", (req, res) => {
   res.send("Hello World");
