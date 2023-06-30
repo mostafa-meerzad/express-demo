@@ -1,8 +1,26 @@
 const express = require("express");
 const Joi = require("joi");
+const log = require("./logger");
 const app = express();
 app.use(express.json());
 
+// make a custom middleware
+// app.use((req, res, next) => {
+//   console.log("logging...")
+// })
+// add a middleware that is in a separate file
+app.use(log)
+// for best practice we should separate our custom middleware functions in their own files
+app.use((req, res, next) => {
+  console.log("authenticating...")
+  next()
+})
+
+// add middleware to get html-form data 
+app.use(express.urlencoded({ extended: true }))
+
+// add middleware to host static files 
+app.use(express.static("./public"))
 const courses = [
   { id: 1, name: "course1" },
   { id: 2, name: "course2" },
