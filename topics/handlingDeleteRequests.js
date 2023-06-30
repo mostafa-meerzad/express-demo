@@ -52,14 +52,22 @@ app.put("/api/courses/:id", (req, res) => {
 });
 
 app.delete("/api/courses/:id", (req, res) => {
+  // to delete a resource we need to follow the following logic
+
+  //look up for the course
   const course = courses.find((c) => parseInt(req.params.id) === c.id);
 
+  // if not existing return 404
   if (!course) {
     res.status(404).send("course with the given id not fund");
     return;
   }
+
+  // delete the resource
   const index = courses.indexOf(course);
   courses.splice(index, 1);
+
+  // return the deleted course
   res.send(course);
 });
 
