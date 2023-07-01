@@ -5,6 +5,12 @@ const morgan = require("morgan");
 const helmet = require("helmet");
 const app = express();
 
+
+
+// console.log("app name: ", config.get("name"));
+// console.log("app mail server: ",config.get("mail.host"));
+// console.log("password: ", config.get("mail.password"));
+
 // detect the environment in which our app is running
 // there is two ways
 // - process.env.NODE_ENV --> undefined  by default
@@ -15,7 +21,7 @@ const app = express();
 if(app.get("env")==="development"){
   app.use(morgan("tiny"))
   console.log("morgan enabled...");
-}
+} 
 
 app.use(express.json());
 
