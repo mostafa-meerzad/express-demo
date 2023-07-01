@@ -1,10 +1,15 @@
+const config = require("config")
 const express = require("express");
 const Joi = require("joi");
 const log = require("./logger");
 const morgan = require("morgan");
 const helmet = require("helmet");
 const app = express();
+const myDebugger = require("debug")("app:test")
+const dbDebugger = require("debug")("app:dbDebug");
+myDebugger("calling myDebugger")
 
+dbDebugger("a message from dbDebugger debugger function")
 
 
 // console.log("app name: ", config.get("name"));
